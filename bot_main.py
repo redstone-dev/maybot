@@ -14,9 +14,15 @@ literally may from pokemon
 
 she has that name because her creator briefly considered may as a chosen name'''
 
+if os.path.exists("./bot-config/description.txt"):
+    with open("./bot-config/description.txt", "rt") as desc:
+        description = desc.read() if desc.read() != "" else "custom help description file is empty. L bozo"
+
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
+
+dotenv_file = dotenv.dotenv_values()
 
 bot = commands.Bot(command_prefix=':', description=description, intents=intents)
 
@@ -24,8 +30,24 @@ bot = commands.Bot(command_prefix=':', description=description, intents=intents)
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
-    await bot.tree.sync()
     await remove_unwanted_hoi_posts()
+
+@bot.command(name="sync-tree")
+async def sync_tree(ctx: commands.Context):
+    """
+    command to sync the command tree
+    only works if youre the owner
+    """
+    if ctx.author.id != int(dotenv_file["OWNER_USER_ID"]):
+        await ctx.reply("this command can only be used by the owner of the bot. L bozo")
+        return
+    
+    bot_reply = await ctx.reply("doing...")
+
+    if any(await bot.tree.sync()):
+        await bot_reply.edit(content="done :thumbs_up:")
+    else:
+        await bot_reply.edit(content="something went wrong with syncing. L bozo")
 
 @bot.hybrid_group(name="oocqc")
 async def oocqc(ctx):
@@ -68,32 +90,43 @@ async def _oocqc_string(ctx, string: str):
                 title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
                 description="\n".join(results)
                 )
-            if len(results_formatted) > 4096:
-                await ctx.reply("only showing first 4096 characters")
+            OOC_EMBED_CHAR_LIMIT = int(dotenv_file["OOC_EMBED_CHAR_LIMIT"])
+            if len(results_formatted) > OOC_EMBED_CHAR_LIMIT:
+                await ctx.reply(f"only showing first {OOC_EMBED_CHAR_LIMIT} characters")
                 results_formatted = discord.Embed(
                     title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
-                    description="\n".join(results)[:4096]
+                    description="\n".join(results)[:OOC_EMBED_CHAR_LIMIT]
                 )
                 await ctx.reply(embed=results_formatted)
             else:
                 await ctx.reply(embed=results_formatted)
         except Exception as e:
-            await ctx.reply(f"error. L bozo (probably <@807361784087707669>'s fault)\n```({e})```")
+            await ctx.reply(f"error. L bozo (probably <@{dotenv_file['OWNER_USER_ID']}>'s fault)\n```({e})```")
             print(e)
 
-HOI_CHANNEL_ID = dotenv.dotenv_values()["HOI_CHANNEL_ID"]
+@oocqc.command(name="lineof")
+async def _oocqc_lineof(ctx, string: str):
+    """
+    get line number of specific quote
+    """
+    with open("oocqc.txt", "rt") as oocqc_file:
+        oocqc_strings = oocqc_file.read().split("\n")
+        await ctx.reply(oocqc_strings.index(string) + 1)
 
-@bot.group(name="infamy", aliases=["pin"])
-async def hall_of_infamy(ctx: discord.Message, spoiler: bool | None):
+HOI_CHANNEL_ID = int(dotenv_file["HOI_CHANNEL_ID"])
+
+@bot.hybrid_group(name="infamy", aliases=["hoi"])
+async def hoi(ctx: commands.Context, spoiler: bool | None):
     """
     sends a message to the hall of infamy
+    only the id subcommand works as a slash command
     """
-
-    if ctx.invoked_subcommand is not None:
+    
+    if ctx.invoked_subcommand:
         return
 
     try:
-        infamy_channel = bot.get_channel(int(HOI_CHANNEL_ID))
+        infamy_channel = bot.get_channel(HOI_CHANNEL_ID)
 
         og_msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
 
@@ -104,22 +137,55 @@ async def hall_of_infamy(ctx: discord.Message, spoiler: bool | None):
         embed = discord.Embed(
             title="#" + og_msg.channel.name,
             description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
-        )   
+        ) 
         embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
         embed.set_image(url=embed_img) if embed_img is not None else None
 
-        sent_msg = await infamy_channel.send(content=f"-# [jump to original message](<{og_msg.jump_url}>) | infamy'd by <@{ctx.author.id}>", embed=embed)
-
-        # with open("watching_ids.txt", "at") as watching_ids:
-            # watching_ids.write(str(sent_msg.id) + "\n")    
+        await infamy_channel.send(
+            content=f"-# [jump to original message](<{og_msg.jump_url}>) | infamy'd by <@{ctx.author.id}>", 
+            embed=embed)
+    
         await ctx.reply("done :thumbs_up:")
     except AttributeError as e:
-        print(e)
         await ctx.reply("you didnt reply to a message. L bozo")
+
+@hoi.command(name="id")
+async def _hoi_id(ctx, _id: str, spoiler: bool | None):
+    """
+    add to hall of infamy using the id of a message (for slash commands)
+    """
+    try:
+        id = int(_id)
+        infamy_channel = bot.get_channel(HOI_CHANNEL_ID)
+
+        og_msg = await ctx.channel.fetch_message(id)
+
+        embed_img = None
+        if len(og_msg.attachments) > 0:
+            embed_img = og_msg.attachments[0]
+
+        embed = discord.Embed(
+            title="#" + og_msg.channel.name,
+            description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
+        ) 
+        embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
+        embed.set_image(url=embed_img) if embed_img is not None else None
+
+        await infamy_channel.send(
+            content=f"-# [jump to original message](<{og_msg.jump_url}>) | infamy'd by <@{ctx.author.id}>", 
+            embed=embed)
+    
+        await ctx.reply("done :thumbs_up:")
+    except AttributeError as e:
+        await ctx.reply("you didnt reply to a message. L bozo")
+    except commands.errors.HybridCommandError:
+        await ctx.reply("message doesnt exist. L bozo")
+    except TypeError:
+        await ctx.reply("not a number. L bozo")
 
 @bot.command()
 async def annihilate(ctx: discord.Message):
-    """
+    """ 
     delete a message with a missile >:)
     """
     try:
@@ -144,11 +210,11 @@ async def colon_3(ctx: commands.Context):
 @bot.hybrid_command(name="rule")
 async def rules(ctx: commands.Context, line):
     """get a rule from rules.txt"""
-    if not os.path.exists("./rules.txt"):
+    if not os.path.exists("./bot-config/rules.txt"):
         await ctx.reply("you dont have a `rules.txt` file. L bozo")
         return
     
-    with open("rules.txt", "rt") as r:
+    with open("./bot-config/rules.txt", "rt") as r:
         rules = r.read().strip().split("\n")
         if int(line) > len(rules) or int(line) < 1:
             await ctx.reply("that number is too small or too big. L bozo")
@@ -161,14 +227,16 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 async def remove_unwanted_hoi_posts():
     try:
-        infamy_channel: discord.TextChannel = bot.get_channel(int(HOI_CHANNEL_ID))
+        infamy_channel: discord.TextChannel = bot.get_channel(HOI_CHANNEL_ID    )
         messages = [
-            msg async for msg in infamy_channel.history(limit=1024)
+        msg async for msg in infamy_channel.history(limit=1024)
             if msg.author.id == bot.application_id
         ]
         for message in messages:
             r_emojis = [r.emoji for r in message.reactions]
-            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= 5:
+            HOI_REACTION_REMOVAL_THRESH = dotenv_file["HOI_REACTION_REMOVAL_THRESH"]
+            if "❌" in r_emojis \
+                and message.reactions[r_emojis.index("❌")].count >= HOI_REACTION_REMOVAL_THRESH:
                 message.delete()    
             time.sleep(0.5)
     except Exception as e:
@@ -176,7 +244,5 @@ async def remove_unwanted_hoi_posts():
     except KeyboardInterrupt:
         sys.exit(0)
 
-TOKEN = dotenv.dotenv_values(".env")["BOT_TOKEN"]
-
-
+TOKEN = dotenv_file["BOT_TOKEN"]
 bot.run(TOKEN)
