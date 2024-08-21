@@ -27,11 +27,6 @@ async def on_ready():
     await bot.tree.sync()
     await remove_unwanted_hoi_posts()
 
-# @bot.command()
-# async def add(ctx, left: int, right: int):    
-    # """Adds two numbers together."""
-    # await ctx.send(left + right)
-
 @bot.hybrid_group(name="oocqc")
 async def oocqc(ctx):
     """get stuff from a bunch of messages out of context"""
