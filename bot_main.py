@@ -2,6 +2,7 @@ import sys
 import discord
 import dotenv
 import time
+import os.path
 # This example requires the 'members' and 'message_content' privileged intents to function.
 
 from discord.ext import commands
@@ -59,7 +60,7 @@ async def _oocqc_string(ctx, string: str):
         try:
             results = [s for s in oocqc_strings if string.lower() in s.lower()]
             results_formatted = discord.Embed(
-                title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
+                    
                 description="\n".join(results)
                 )
             if len(results_formatted) > 4096:
@@ -131,6 +132,19 @@ async def colon_3(ctx: commands.Context):
     <- so that maybot replies with :3 when you send it too
     """
     await ctx.channel.send(":3")
+
+@bot.hybrid_command(name="rule")
+async def rules(ctx: commands.Context, line):
+    if not os.path.exists("./rules.txt"):
+        await ctx.reply("you dont have a `rules.txt` file. L bozo")
+        return
+    
+    with open("rules.txt", "rt") as r:
+        rules = r.read().strip().split("\n")
+        if int(line) > len(rules) or int(line) < 1:
+            await ctx.reply("that number is too small or too big. L bozo")
+            return
+        await ctx.reply(rules[int(line) - 1])
 
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
