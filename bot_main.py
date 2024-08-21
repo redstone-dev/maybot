@@ -60,7 +60,7 @@ async def _oocqc_string(ctx, string: str):
         try:
             results = [s for s in oocqc_strings if string.lower() in s.lower()]
             results_formatted = discord.Embed(
-                    
+                title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
                 description="\n".join(results)
                 )
             if len(results_formatted) > 4096:
