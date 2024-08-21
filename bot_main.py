@@ -24,7 +24,7 @@ intents.message_content = True
 
 dotenv_file = dotenv.dotenv_values()
 
-bot = commands.Bot(command_prefix=':', description=description, intents=intents)
+bot = commands.Bot(command_prefix=dotenv_file["BOT_PREFIX"], description=description, intents=intents)
 
 @bot.event
 async def on_ready():
@@ -74,7 +74,7 @@ async def _oocqc_line(ctx, line: int):
         try:
             assert line < len(oocqc_strings)
         except:
-            await ctx.reply()
+            await ctx.reply("wow that line is out of this world!1!! L bozo")
         await ctx.reply(oocqc_strings[line - 1])
 
 @oocqc.command(name="string")
@@ -111,7 +111,10 @@ async def _oocqc_lineof(ctx, string: str):
     """
     with open("oocqc.txt", "rt") as oocqc_file:
         oocqc_strings = oocqc_file.read().split("\n")
-        await ctx.reply(oocqc_strings.index(string) + 1)
+        try:
+            await ctx.reply(oocqc_strings.index(string) + 1)
+        except ValueError:
+            await ctx.reply("try wrapping the string in quotes and escaping any quotes that are inside of that. L bozo")
 
 HOI_CHANNEL_ID = int(dotenv_file["HOI_CHANNEL_ID"])
 
@@ -183,6 +186,11 @@ async def _hoi_id(ctx, _id: str, spoiler: bool | None):
     except TypeError:
         await ctx.reply("not a number. L bozo")
 
+@bot.tree.context_menu(name='Add to infamy')
+async def add_to_infamy(interaction: discord.Interaction, message: discord.Message):
+    pass
+
+
 @bot.command()
 async def annihilate(ctx: discord.Message):
     """ 
@@ -208,10 +216,15 @@ async def colon_3(ctx: commands.Context):
     await ctx.channel.send(":3")
 
 @bot.hybrid_command(name="rule")
-async def rules(ctx: commands.Context, line):
+async def rules(ctx: commands.Context, line: int | None):
     """get a rule from rules.txt"""
+
     if not os.path.exists("./bot-config/rules.txt"):
         await ctx.reply("you dont have a `rules.txt` file. L bozo")
+        return
+    
+    if line is None:
+        await ctx.reply("you didnt give a line number. L bozo")
         return
     
     with open("./bot-config/rules.txt", "rt") as r:
@@ -236,8 +249,8 @@ async def remove_unwanted_hoi_posts():
             r_emojis = [r.emoji for r in message.reactions]
             HOI_REACTION_REMOVAL_THRESH = dotenv_file["HOI_REACTION_REMOVAL_THRESH"]
             if "❌" in r_emojis \
-                and message.reactions[r_emojis.index("❌")].count >= HOI_REACTION_REMOVAL_THRESH:
-                message.delete()    
+                and message.reactions[r_emojis.index("❌")].count >= int(HOI_REACTION_REMOVAL_THRESH):
+                await message.delete()    
             time.sleep(0.5)
     except Exception as e:
         print(e)

@@ -23,6 +23,13 @@ Type :help command for more info on a command.
 You can also type :help category for more info on a category.
 ```
 
+## Installation
+1. Clone the repo to a directory of your choosing
+2. Create a venv: `python3 -m venv .venv`
+3. Install dependencies: `pip3 install -r requirements.txt`
+4. Create a discord bot and put your token in the `.env` file (You did make one of those, right?)
+
+
 ## Configuring Rules
 Create a file with the path `bot-config/rules.txt` and just put your rules in line by line like this:
 ```
