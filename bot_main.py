@@ -118,6 +118,22 @@ async def _oocqc_lineof(ctx, string: str):
 
 HOI_CHANNEL_ID = int(dotenv_file["HOI_CHANNEL_ID"])
 
+async def send_to_hoi(og_msg: discord.Message, user: discord.User, /, spoiler: bool):
+    embed_img = None
+    if len(og_msg.attachments) > 0:
+        embed_img = og_msg.attachments[0]
+
+    embed = discord.Embed(
+        title="#" + og_msg.channel.name,
+        description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
+    ) 
+    embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
+    embed.set_image(url=embed_img) if embed_img is not None else None
+
+    await bot.get_channel(int(HOI_CHANNEL_ID)).send(
+        content=f"-# [jump to original message](<{og_msg.jump_url}>) | inducted by <@{user.id}>", 
+        embed=embed)
+
 @bot.hybrid_group(name="infamy", aliases=["hoi"])
 async def hoi(ctx: commands.Context, spoiler: bool | None):
     """
@@ -129,31 +145,14 @@ async def hoi(ctx: commands.Context, spoiler: bool | None):
         return
 
     try:
-        infamy_channel = bot.get_channel(HOI_CHANNEL_ID)
-
-        og_msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-
-        embed_img = None
-        if len(og_msg.attachments) > 0:
-            embed_img = og_msg.attachments[0]
-
-        embed = discord.Embed(
-            title="#" + og_msg.channel.name,
-            description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
-        ) 
-        embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
-        embed.set_image(url=embed_img) if embed_img is not None else None
-
-        await infamy_channel.send(
-            content=f"-# [jump to original message](<{og_msg.jump_url}>) | infamy'd by <@{ctx.author.id}>", 
-            embed=embed)
+        send_to_hoi(ctx.message.reference, ctx.author)
     
         await ctx.reply("done :thumbs_up:")
     except AttributeError as e:
         await ctx.reply("you didnt reply to a message. L bozo")
 
 @hoi.command(name="id")
-async def _hoi_id(ctx, _id: str, spoiler: bool | None):
+async def _c_hoi_id(ctx, _id: str, spoiler: bool | None):
     """
     add to hall of infamy using the id of a message (for slash commands)
     """
@@ -185,11 +184,16 @@ async def _hoi_id(ctx, _id: str, spoiler: bool | None):
         await ctx.reply("message doesnt exist. L bozo")
     except TypeError:
         await ctx.reply("not a number. L bozo")
-
-@bot.tree.context_menu(name='Add to infamy')
+    
+@bot.tree.context_menu(name='Induct into the Hall of Infamy')
 async def add_to_infamy(interaction: discord.Interaction, message: discord.Message):
-    pass
 
+    """
+    add to hall of infamy using the id of a message (for slash commands)
+    """
+    await send_to_hoi(message, interaction.user, spoiler=False)
+
+    await interaction.response.send_message("done :thumbs_up:", silent=True)
 
 @bot.command()
 async def annihilate(ctx: discord.Message):
@@ -210,7 +214,7 @@ async def annihilate(ctx: discord.Message):
 
 @bot.command(name="3")
 async def colon_3(ctx: commands.Context):
-    """
+    """ 
     <- so that maybot replies with :3 when you send it too
     """
     await ctx.channel.send(":3")
