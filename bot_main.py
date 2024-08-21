@@ -34,17 +34,24 @@ async def on_ready():
 
 @bot.hybrid_group(name="oocqc")
 async def oocqc(ctx):
+    """get stuff from a bunch of messages out of context"""
     return
 
 @oocqc.command(name="random")
 async def ooc_random(ctx):
+    """
+    random string from oocqc
+    """
     with open("oocqc.txt", "rt") as oocqc_file:
             oocqc_strings = oocqc_file.read().split("\n")
             if ctx.invoked_subcommand is None:  
                 await ctx.reply(random.choice(oocqc_strings))   
 
 @oocqc.command(name="line")
-async def _oocqc_line(ctx, line: int):      
+async def _oocqc_line(ctx, line: int):
+    """
+    specific line from oocqc file
+    """
     with open("oocqc.txt", "rt") as oocqc_file:
         oocqc_strings = oocqc_file.read().split("\n")
         try:
@@ -55,6 +62,9 @@ async def _oocqc_line(ctx, line: int):
 
 @oocqc.command(name="string")
 async def _oocqc_string(ctx, string: str):
+    """
+    searches for a specific string in oocqc
+    """
     with open("oocqc.txt", "rt") as oocqc_file:
         oocqc_strings = oocqc_file.read().split("\n")
         try:
@@ -81,7 +91,7 @@ HOI_CHANNEL_ID = dotenv.dotenv_values()["HOI_CHANNEL_ID"]
 @bot.group(name="infamy", aliases=["pin"])
 async def hall_of_infamy(ctx: discord.Message, spoiler: bool | None):
     """
-    only works with non-slash commands    
+    sends a message to the hall of infamy
     """
 
     if ctx.invoked_subcommand is not None:
@@ -114,6 +124,9 @@ async def hall_of_infamy(ctx: discord.Message, spoiler: bool | None):
 
 @bot.command()
 async def annihilate(ctx: discord.Message):
+    """
+    delete a message with a missile >:)
+    """
     try:
         og_msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
         response_msg = await ctx.reply("https://tenor.com/view/rocket-shi-rocket-bomb-gif-26885344")
@@ -135,6 +148,7 @@ async def colon_3(ctx: commands.Context):
 
 @bot.hybrid_command(name="rule")
 async def rules(ctx: commands.Context, line):
+    """get a rule from rules.txt"""
     if not os.path.exists("./rules.txt"):
         await ctx.reply("you dont have a `rules.txt` file. L bozo")
         return
