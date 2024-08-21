@@ -188,8 +188,37 @@ async def _hoi_id(ctx, _id: str, spoiler: bool | None):
 
 @bot.tree.context_menu(name='Add to infamy')
 async def add_to_infamy(interaction: discord.Interaction, message: discord.Message):
-    pass
+    infamy_channel = bot.get_channel(HOI_CHANNEL_ID)
+    embed_img = None
+    if len(message.attachments) > 0:
+        embed_img = message.attachments[0]
+    embed = discord.Embed(
+        title="#" + message.channel.name,
+        description=f"{message.content}{"||" if spoiler else ""}"
+    )
+    embed.set_author(name=message.author.display_name, icon_url=message.author.display_avatar.url)
+    embed.set_image(url=embed_img) if embed_img is not None else None
+    await infamy_channel.send(
+        content=f"-# [jump to original message](<{message.jump_url}>) | infamy'd by <@{interaction.user.id}>", 
+        embed=embed)
+    await interaction.response.send_message("done :thumbs_up:")
 
+@bot.tree.context_menu(name='Add to infamy (spoiler)')
+async def add_to_infamy_spoiler(interaction: discord.Interaction, message: discord.Message):
+    infamy_channel = bot.get_channel(HOI_CHANNEL_ID)
+    embed_img = None
+    if len(message.attachments) > 0:
+        embed_img = message.attachments[0]
+    embed = discord.Embed(
+        title="#" + message.channel.name,
+        description=f"||"{message.content}"||"
+    )
+    embed.set_author(name=message.author.display_name, icon_url=message.author.display_avatar.url)
+    embed.set_image(url=embed_img) if embed_img is not None else None
+    await infamy_channel.send(
+        content=f"-# [jump to original message](<{message.jump_url}>) | infamy'd by <@{interaction.user.id}>", 
+        embed=embed)
+    await interaction.response.send_message("done :thumbs_up:")
 
 @bot.command()
 async def annihilate(ctx: discord.Message):
