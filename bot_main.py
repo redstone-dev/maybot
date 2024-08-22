@@ -244,7 +244,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 async def remove_unwanted_hoi_posts():
     try:
-        infamy_channel: discord.TextChannel = bot.get_channel(HOI_CHANNEL_ID    )
+        infamy_channel: discord.TextChannel = bot.get_channel(HOI_CHANNEL_ID)
         messages = [
         msg async for msg in infamy_channel.history(limit=1024)
             if msg.author.id == bot.application_id
