@@ -125,7 +125,7 @@ async def send_to_hoi(og_msg: discord.Message, user: discord.User, /, spoiler: b
 
     embed = discord.Embed(
         title="#" + og_msg.channel.name,
-        description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
+        description=f"{'||' if spoiler else ''}{og_msg.content}{'||' if spoiler else ''}",
     ) 
     embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
     embed.set_image(url=embed_img) if embed_img is not None else None
