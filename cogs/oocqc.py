@@ -14,7 +14,7 @@ class OOCQC(commands.Cog):
     def setup(self):
         pass
 
-    @nextcord.slash_command
+    @nextcord.slash_command()
     async def oocqc(self, interaction: nextcord.Interaction):
         pass
 
