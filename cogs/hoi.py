@@ -4,7 +4,25 @@ from dotenv import load_dotenv
 from os import environ
 from time import sleep
 
+import nextcord.ext
+import nextcord.ext.commands
+
 load_dotenv()
+
+async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
+    try:
+        infamy_channel: nextcord.TextChannel = bot.get_channel(int(environ["HOI_CHANNEL_ID"]))
+        messages = [
+            msg async for msg in infamy_channel.history(limit=1024)
+            if msg.author.id == bot.application_id
+        ]
+        for message in messages:
+            r_emojis = [r.emoji for r in message.reactions]
+
+            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= int(environ["HOI_REACTION_REMOVAL_THRESH"]):
+                await message.delete()
+    except Exception as e:
+        print(e)
 
 class HallOfInfamy(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -30,23 +48,11 @@ class HallOfInfamy(commands.Cog):
     async def hoi_context_menu(self, interaction: nextcord.Interaction, message: nextcord.Message):
         await self.send_to_hoi(message, interaction.user, spoiler=False)
         await interaction.response.send_message("sent :thumbs_up:", ephemeral=True)
-    
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):
-        self.remove_unwanted_hoi_posts()
+        msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        r_emojis = [r.emoji for r in msg.reactions]
 
-    async def remove_unwanted_hoi_posts(self):
-        try:
-            infamy_channel: nextcord.TextChannel = self.bot.get_channel(environ["HOI_CHANNEL_ID"])
-            messages = [
-            msg async for msg in infamy_channel.history(limit=1024)
-                if msg.author.id == self.bot.application_id
-            ]
-            for message in messages:
-                r_emojis = [r.emoji for r in message.reactions]
-
-                if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= int(environ["HOI_REACTION_REMOVAL_THRESH"]):
-                    await message.delete()    
-                    sleep(0.15)
-        except Exception as e:
-            print(e)
+        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= 1:
+            await msg.delete()

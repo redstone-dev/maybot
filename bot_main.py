@@ -32,6 +32,7 @@ async def on_ready():
     bot.add_cog(cogs.hoi.HallOfInfamy(bot))
     bot.add_cog(cogs.misc.Misc(bot))
     bot.add_cog(cogs.oocqc.OOCQC(bot))
+    await cogs.hoi.remove_unwanted_hoi_posts(bot)
 
 TOKEN = dotenv_file["BOT_TOKEN"]
 bot.run(TOKEN)

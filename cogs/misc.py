@@ -34,7 +34,7 @@ class Misc(commands.Cog):
             )
 
         with open("./bot-config/rules.txt", "rt") as rules:
-            rules_list = rules.split("\n")
+            rules_list = rules.read().split("\n")
             if line < 1:
                 await interaction.response.send_message(
                     "you can't have negative or zero rules wtf? L bozo"
@@ -47,3 +47,7 @@ class Misc(commands.Cog):
                 return
             
             await interaction.response.send_message(rules_list[line - 1])
+
+    @commands.command(name="eeznuts")
+    async def deez_nuts(self, ctx: commands.Context):
+        await ctx.reply("oh so you think youre funny huh? youre not. L bozo")
