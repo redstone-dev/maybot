@@ -1,8 +1,8 @@
 # maybot
 - A bot for my private server with friends that I'm open-sourcing because yes.
 - Made with discord.py.
-- The default prefix is `:`.
-- Use `:help` to get a command list. The output should look something like this:
+- The default prefix is `.`.
+- Use `.help` to get a command list. The output should look something like this:
 ```
 bot for the gay nerds server
 
@@ -19,8 +19,8 @@ she has that name because her creator briefly considered may as a chosen name
   rule       get a rule from rules.txt
   sync-tree  command to sync the command tree
 
-Type :help command for more info on a command.
-You can also type :help category for more info on a category.
+Type .help command for more info on a command.
+You can also type .help category for more info on a category.
 ```
 
 ## Installation
@@ -50,7 +50,7 @@ BOT_TOKEN=
 OWNER_USER_ID=
 
 # Bot config stuff
-BOT_PREFIX=:
+BOT_PREFIX=.
 OOC_EMBED_CHAR_LIMIT=4096
 HOI_CHANNEL_ID=
 HOI_REACTION_REMOVAL_THRESH=3
