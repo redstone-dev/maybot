@@ -29,9 +29,9 @@ bot = commands.Bot(command_prefix=dotenv_file["BOT_PREFIX"], description=descrip
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
-    bot.load_extension(cogs.hoi.HallOfInfamy(bot))
-    bot.load_extension(cogs.misc.Misc(bot))
-    bot.load_extension(cogs.oocqc.OOCQC(bot))
+    bot.add_cog(cogs.hoi.HallOfInfamy(bot))
+    bot.add_cog(cogs.misc.Misc(bot))
+    bot.add_cog(cogs.oocqc.OOCQC(bot))
 
 TOKEN = dotenv_file["BOT_TOKEN"]
 bot.run(TOKEN)

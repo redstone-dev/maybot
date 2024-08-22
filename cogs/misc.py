@@ -19,7 +19,7 @@ class Misc(commands.Cog):
     async def sync_tree(self, ctx: commands.Context):
         """globally syncs the command tree"""
         await self.bot.sync_all_application_commands()
-        ctx.reply("done :thumbs_up:")
+        await ctx.reply("done :thumbs_up:")
 
     @sync_tree.error
     async def _sync_tree_err(self, ctx: commands.Context, error):
