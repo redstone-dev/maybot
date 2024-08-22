@@ -94,7 +94,7 @@ async def _oocqc_string(ctx, string: str):
             if len(results_formatted) > OOC_EMBED_CHAR_LIMIT:
                 await ctx.reply(f"only showing first {OOC_EMBED_CHAR_LIMIT} characters")
                 results_formatted = discord.Embed(
-                    title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
+                    title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"", 
                     description="\n".join(results)[:OOC_EMBED_CHAR_LIMIT]
                 )
                 await ctx.reply(embed=results_formatted)
