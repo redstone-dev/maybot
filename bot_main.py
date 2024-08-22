@@ -1,11 +1,11 @@
 import sys
-import discord
+import nextcord
 import dotenv
 import time
 import os.path
 # This example requires the 'members' and 'message_content' privileged intents to function.
 
-from discord.ext import commands
+from nextcord.ext import commands
 import random
 
 description = '''bot for the gay nerds server
@@ -18,7 +18,7 @@ if os.path.exists("./bot-config/description.txt"):
     with open("./bot-config/description.txt", "rt") as desc:
         description = desc.read() if desc.read() != "" else "custom help description file is empty. L bozo"
 
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.members = True
 intents.message_content = True
 
@@ -86,14 +86,14 @@ async def _oocqc_string(ctx, string: str):
         oocqc_strings = oocqc_file.read().split("\n")
         try:
             results = [s for s in oocqc_strings if string.lower() in s.lower()]
-            results_formatted = discord.Embed(
+            results_formatted = nextcord.Embed(
                 title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"", 
                 description="\n".join(results)
                 )
             OOC_EMBED_CHAR_LIMIT = int(dotenv_file["OOC_EMBED_CHAR_LIMIT"])
             if len(results_formatted) > OOC_EMBED_CHAR_LIMIT:
                 await ctx.reply(f"only showing first {OOC_EMBED_CHAR_LIMIT} characters")
-                results_formatted = discord.Embed(
+                results_formatted = nextcord.Embed(
                     title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"", 
                     description="\n".join(results)[:OOC_EMBED_CHAR_LIMIT]
                 )
@@ -118,12 +118,12 @@ async def _oocqc_lineof(ctx, string: str):
 
 HOI_CHANNEL_ID = int(dotenv_file["HOI_CHANNEL_ID"])
 
-async def send_to_hoi(og_msg: discord.Message, user: discord.User, /, spoiler: bool):
+async def send_to_hoi(og_msg: nextcord.Message, user: nextcord.User, /, spoiler: bool):
     embed_img = None
     if len(og_msg.attachments) > 0:
         embed_img = og_msg.attachments[0]
 
-    embed = discord.Embed(
+    embed = nextcord.Embed(
         title="#" + og_msg.channel.name,
         description=f"{'||' if spoiler else ''}{og_msg.content}{'||' if spoiler else ''}",
     ) 
@@ -166,7 +166,7 @@ async def _c_hoi_id(ctx, _id: str, spoiler: bool | None):
         if len(og_msg.attachments) > 0:
             embed_img = og_msg.attachments[0]
 
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title="#" + og_msg.channel.name,
             description=f"{'||' if spoiler else ''}{og_msg.content}{'||' if spoiler else ''}",
         ) 
@@ -186,7 +186,7 @@ async def _c_hoi_id(ctx, _id: str, spoiler: bool | None):
         await ctx.reply("not a number. L bozo")
     
 @bot.tree.context_menu(name='Induct into the Hall of Infamy')
-async def add_to_infamy(interaction: discord.Interaction, message: discord.Message):
+async def add_to_infamy(interaction: nextcord.Interaction, message: nextcord.Message):
 
     """
     add to hall of infamy using the id of a message (for slash commands)
@@ -196,7 +196,7 @@ async def add_to_infamy(interaction: discord.Interaction, message: discord.Messa
     await interaction.response.send_message("done :thumbs_up:", silent=True)
 
 @bot.command()
-async def annihilate(ctx: discord.Message):
+async def annihilate(ctx: nextcord.Message):
     """ 
     delete a message with a missile >:)
     """
@@ -232,12 +232,12 @@ async def rules(ctx: commands.Context, line: int | None):
         await ctx.reply(rules[int(line) - 1])
 
 @bot.event
-async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
     await remove_unwanted_hoi_posts() if payload.channel_id == HOI_CHANNEL_ID else None 
 
 async def remove_unwanted_hoi_posts():
     try:
-        infamy_channel: discord.TextChannel = bot.get_channel(HOI_CHANNEL_ID)
+        infamy_channel: nextcord.TextChannel = bot.get_channel(HOI_CHANNEL_ID)
         messages = [
         msg async for msg in infamy_channel.history(limit=1024)
             if msg.author.id == bot.application_id
