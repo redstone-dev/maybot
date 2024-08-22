@@ -15,7 +15,7 @@ class OOCQC(commands.Cog):
         pass
 
     @nextcord.slash_command
-    async def oocqc(interaction: nextcord.Interaction):
+    async def oocqc(self, interaction: nextcord.Interaction):
         pass
 
     @oocqc.subcommand(description="gets a specific string from oocqc")
