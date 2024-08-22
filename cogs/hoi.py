@@ -7,7 +7,7 @@ from time import sleep
 import nextcord.ext
 import nextcord.ext.commands
 
-load_dotenv()
+load_dotenv("../.env")
 
 async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
     try:
@@ -54,5 +54,5 @@ class HallOfInfamy(commands.Cog):
         msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         r_emojis = [r.emoji for r in msg.reactions]
 
-        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= 1:
+        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= int(environ["HOI_REACTION_REMOVAL_THRESH"]):
             await msg.delete()

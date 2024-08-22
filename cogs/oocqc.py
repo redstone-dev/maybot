@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from os import environ
 from random import choice
 
-load_dotenv()
+load_dotenv("../.env")
 
 
 class OOCQC(commands.Cog):

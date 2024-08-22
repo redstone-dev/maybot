@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from os import environ
 from os.path import exists
 
-load_dotenv()
+load_dotenv("../.env")
 
 
 class Misc(commands.Cog):

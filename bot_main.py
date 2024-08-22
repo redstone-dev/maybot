@@ -7,6 +7,7 @@ import cogs
 import cogs.hoi
 import cogs.misc
 import cogs.oocqc
+import cogs.starboard
 
 description = '''bot for the gay nerds server
 
@@ -32,6 +33,7 @@ async def on_ready():
     bot.add_cog(cogs.hoi.HallOfInfamy(bot))
     bot.add_cog(cogs.misc.Misc(bot))
     bot.add_cog(cogs.oocqc.OOCQC(bot))
+    bot.add_cog(cogs.starboard.Starboard(bot))
     await cogs.hoi.remove_unwanted_hoi_posts(bot)
 
 TOKEN = dotenv_file["BOT_TOKEN"]
