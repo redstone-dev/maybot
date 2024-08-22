@@ -18,7 +18,7 @@ class OOCQC(commands.Cog):
     async def oocqc(interaction: nextcord.Interaction):
         pass
 
-    @oocqc.slash_command(description="gets a specific string from oocqc")
+    @oocqc.subcommand(description="gets a specific string from oocqc")
     async def string(self, interaction: nextcord.Interaction, string: str):
         """
         searches for a specific string in oocqc
@@ -49,13 +49,13 @@ class OOCQC(commands.Cog):
                 )
                 print(e)
 
-    @oocqc.slash_command(description="gets a random string from oocqc")
+    @oocqc.subcommand(description="gets a random string from oocqc")
     async def random(self, interaction: nextcord.Interaction):
         with open("oocqc.txt", "rt") as oocqc_file:
             oocqc_strings = oocqc_file.read().split("\n")
             await interaction.response.send_message(choice(oocqc_strings))
 
-    @oocqc.slash_command(description="get the quote in the oocqc file at a specified line")
+    @oocqc.subcommand(description="get the quote in the oocqc file at a specified line")
     async def line(self, interaction: nextcord.Interaction, line: int):
         """
         specific line from oocqc file

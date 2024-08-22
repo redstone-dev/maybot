@@ -3,6 +3,11 @@ import dotenv
 import os.path
 from nextcord.ext import commands
 
+import cogs
+import cogs.hoi
+import cogs.misc
+import cogs.oocqc
+
 description = '''bot for the gay nerds server
 
 literally may from pokemon
@@ -24,9 +29,9 @@ bot = commands.Bot(command_prefix=dotenv_file["BOT_PREFIX"], description=descrip
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
-    bot.load_extension("cogs.hoi")
-    bot.load_extension("cogs.misc")
-    bot.load_extension("cogs.oocqc")
+    bot.add_cog(cogs.hoi.HallOfInfamy())
+    bot.add_cog(cogs.misc.Misc())
+    bot.add_cog(cogs.oocqc.OOCQC())
 
 TOKEN = dotenv_file["BOT_TOKEN"]
 bot.run(TOKEN)
