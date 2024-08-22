@@ -40,7 +40,7 @@ the third one
 When you run `/rule x`, maybot will reply with the rule on that line number in `rules.txt`.
 
 ## Custom Bot Description
-In the same `bot-config` directory, you can add a `description.txt`. Whatever is in there will replace the default bot description when running `:help`.
+In the same `bot-config` directory, you can add a `description.txt`. Whatever is in there will replace the default bot description when running `.help`.
 
 ## Other Config
 Make a `.env` file in the same directory as `bot_main.py` and add this to it:
