@@ -2,3 +2,5 @@
 __pycache__/*
 .venv/*
 bot-config/*
+cogs/__pycache__/*
+__pycache__/*
