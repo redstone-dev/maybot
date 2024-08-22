@@ -168,7 +168,7 @@ async def _c_hoi_id(ctx, _id: str, spoiler: bool | None):
 
         embed = discord.Embed(
             title="#" + og_msg.channel.name,
-            description=f"{"||" if spoiler else ""}{og_msg.content}{"||" if spoiler else ""}",
+            description=f"{'||' if spoiler else ''}{og_msg.content}{'||' if spoiler else ''}",
         ) 
         embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
         embed.set_image(url=embed_img) if embed_img is not None else None
@@ -211,13 +211,6 @@ async def annihilate(ctx: discord.Message):
     except AttributeError as e:
         print(e)
         await ctx.reply("you didnt reply to a message. L bozo")
-
-@bot.command(name="3")
-async def colon_3(ctx: commands.Context):
-    """ 
-    <- so that maybot replies with :3 when you send it too
-    """
-    await ctx.channel.send(":3")
 
 @bot.hybrid_command(name="rule")
 async def rules(ctx: commands.Context, line: int | None):
