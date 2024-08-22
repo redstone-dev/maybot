@@ -87,7 +87,7 @@ async def _oocqc_string(ctx, string: str):
         try:
             results = [s for s in oocqc_strings if string.lower() in s.lower()]
             results_formatted = discord.Embed(
-                title=f"{len(results)} result{"s" if len(oocqc_strings) != 1 else ""} found for \"{string}\"", 
+                title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"", 
                 description="\n".join(results)
                 )
             OOC_EMBED_CHAR_LIMIT = int(dotenv_file["OOC_EMBED_CHAR_LIMIT"])
