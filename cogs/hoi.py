@@ -1,17 +1,15 @@
 import nextcord
 from nextcord.ext import commands
-from dotenv import load_dotenv
-from os import environ
 from time import sleep
+from .util import Config
 
 import nextcord.ext
-import nextcord.ext.commands
 
-load_dotenv()
+conf = Config("./bot-config/bot_settings.json")
 
 async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
     try:
-        infamy_channel: nextcord.TextChannel = bot.get_channel(int(environ["HOI_CHANNEL_ID"]))
+        infamy_channel: nextcord.TextChannel = bot.get_channel(conf["hoi"]["channel_id"])
         messages = [
             msg async for msg in infamy_channel.history(limit=1024)
             if msg.author.id == bot.application_id
@@ -19,7 +17,7 @@ async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
         for message in messages:
             r_emojis = [r.emoji for r in message.reactions]
 
-            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= int(environ["HOI_REACTION_REMOVAL_THRESH"]):
+            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= conf["hoi"]["reaction_removal_thresh"]:
                 await message.delete()
     except Exception as e:
         print(e)
@@ -40,7 +38,7 @@ class HallOfInfamy(commands.Cog):
         embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
         embed.set_image(url=embed_img) if embed_img is not None else None
 
-        await self.bot.get_channel(int(environ["HOI_CHANNEL_ID"])).send(
+        await self.bot.get_channel(conf["hoi"]["channel_id"]).send(
             content=f"-# [jump to original message](<{og_msg.jump_url}>) | inducted by {user.mention}", 
             embed=embed)
     
@@ -54,5 +52,5 @@ class HallOfInfamy(commands.Cog):
         msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         r_emojis = [r.emoji for r in msg.reactions]
 
-        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= 1:
+        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= int(conf["hoi"]["reaction_removal_thresh"]):
             await msg.delete()

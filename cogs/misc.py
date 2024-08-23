@@ -1,11 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from dotenv import load_dotenv
-from os import environ
 from os.path import exists
-
-load_dotenv()
-
 
 class Misc(commands.Cog):
     def __init__(self, bot: commands.Bot):
