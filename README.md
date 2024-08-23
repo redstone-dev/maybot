@@ -19,19 +19,7 @@ the third one
 When you run `/rule x`, maybot will reply with the rule on that line number in `rules.txt`.
 
 ## Custom Bot Description
-In the same `bot-config` directory, you can add a `description.txt`. Whatever is in there will replace the default bot description when running `:help`.
+In the same `bot-config` directory, you can add a `description.txt`. Whatever is in there will replace the default bot description when running `.help`.
 
 ## Other Config
-Make a `.env` file in the same directory as `bot_main.py` and add this to it:
-```
-# User IDs for the bot to function
-BOT_TOKEN=
-OWNER_USER_ID=
-
-# Bot config stuff
-BOT_PREFIX=:
-OOC_EMBED_CHAR_LIMIT=4096
-HOI_CHANNEL_ID=
-HOI_REACTION_REMOVAL_THRESH=3
-```
-Add your bot token, own user ID, and ID of the channel you want to use as the Hall of Infamy (HoI).
+See [this wiki article](https://github.com/redstone-dev/maybot/wiki/Initial-configuration-of-maybot) for information about configuring maybot.

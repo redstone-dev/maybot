@@ -42,7 +42,3 @@ class Misc(commands.Cog):
                 return
             
             await interaction.response.send_message(rules_list[line - 1])
-
-    @commands.command(name="eeznuts")
-    async def deez_nuts(self, ctx: commands.Context):
-        await ctx.reply("oh so you think youre funny huh? youre not. L bozo")
