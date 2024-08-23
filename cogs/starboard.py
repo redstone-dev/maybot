@@ -1,11 +1,9 @@
 import nextcord
 from nextcord.ext import commands
-from dotenv import load_dotenv
-from os import environ
 from random import choice
+from .util import Config
 
-load_dotenv("../.env")
-
+conf = Config("./bot-config/bot_settings.json")
 
 class Starboard(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -16,7 +14,7 @@ class Starboard(commands.Cog):
         msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         r_emojis = [r.emoji for r in msg.reactions]
 
-        if environ["STB_REACTION_EMOJIS"] in r_emojis and msg.reactions[r_emojis.index(environ["STB_REACTION_EMOJIS"])].count >= int(environ["STB_REACTION_ADD_THRESH"]):
+        if conf["starboard"]["reactions"]["allowed_emojis"] in r_emojis and msg.reactions[r_emojis.index(conf["starboard"]["reactions"]["allowed_emojis"])].count == conf["starboard"]["reactions"]["add_thresh"]:
             embed = nextcord.Embed()
             
             embed.title = f"#{msg.channel.name}"
@@ -28,5 +26,5 @@ class Starboard(commands.Cog):
 
             embed.image.url = msg.attachments[0].url if len(msg.attachments) > 0 and msg.attachments[0].content_type.startswith("image") else None
 
-            await self.bot.get_channel(int(environ["STB_CHANNEL_ID"])) \
-                .send(embed=embed, content=f"-# [jump to message]({msg.jump_url}) | {msg.reactions[r_emojis.index(environ["STB_REACTION_EMOJIS"])].count}")
+            await self.bot.get_channel(int(conf["starboard"]["channel_id"])) \
+                .send(embed=embed, content=f"-# [jump to message]({msg.jump_url}) | {conf['starboard']['reactions']['allowed_emojis']}{msg.reactions[r_emojis.index(conf['starboard']['reactions']['allowed_emojis'])].count}")

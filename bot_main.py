@@ -1,13 +1,15 @@
 import nextcord
-import dotenv
 import os.path
 from nextcord.ext import commands
+from dotenv import dotenv_values
 
 import cogs
 import cogs.hoi
 import cogs.misc
 import cogs.oocqc
 import cogs.starboard
+
+from cogs.util import Config
 
 description = '''bot for the gay nerds server
 
@@ -22,9 +24,10 @@ if os.path.exists("./bot-config/description.txt"):
 intents = nextcord.Intents.default()
 intents.message_content = True
 
-dotenv_file = dotenv.dotenv_values()
+dotenv_file = dotenv_values()
+conf = Config("./bot-config/bot_settings.json")
 
-bot = commands.Bot(command_prefix=dotenv_file["BOT_PREFIX"], description=description, intents=intents)
+bot = commands.Bot(command_prefix=conf["general"]["prefix"], description=description, intents=intents)
 
 @bot.event
 async def on_ready():

@@ -1,11 +1,9 @@
 import nextcord
 from nextcord.ext import commands
-from dotenv import load_dotenv
-from os import environ
 from random import choice
+from .util import Config
 
-load_dotenv("../.env")
-
+conf = Config("./bot-config/bot_settings.json")
 
 class OOCQC(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -31,7 +29,7 @@ class OOCQC(commands.Cog):
                     title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
                     description="\n".join(results),
                 )
-                OOC_EMBED_CHAR_LIMIT = int(environ["OOC_EMBED_CHAR_LIMIT"])
+                OOC_EMBED_CHAR_LIMIT = int(conf["OOC_EMBED_CHAR_LIMIT"])
                 if len(results_formatted) > OOC_EMBED_CHAR_LIMIT:
                     results_formatted = nextcord.Embed(
                         title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",

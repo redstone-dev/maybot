@@ -1,33 +1,12 @@
 # maybot
 - A bot for my private server with friends that I'm open-sourcing because yes.
 - Made with discord.py.
-- The default prefix is `:`.
-- Use `:help` to get a command list. The output should look something like this:
-```
-bot for the gay nerds server
-
-literally may from pokemon
-
-she has that name because her creator briefly considered may as a chosen name
-
-​No Category:
-  3          <- so that maybot replies with :3 when you send it too
-  annihilate delete a message with a missile >:)
-  help       Shows this message
-  infamy     sends a message to the hall of infamy
-  oocqc      get stuff from a bunch of messages out of context
-  rule       get a rule from rules.txt
-  sync-tree  command to sync the command tree
-
-Type :help command for more info on a command.
-You can also type :help category for more info on a category.
-```
+- Most commands are slash commands or in the message right-click menu except for `.sync-tree`, which you should run after making changes to an application command.
 
 ## Installation
 1. Clone the repo to a directory of your choosing
-2. Create a venv: `python3 -m venv .venv`
-3. Install dependencies: `pip3 install -r requirements.txt`
-4. Create a discord bot and put your token in the `.env` file (You did make one of those, right?)
+2. `chmod u+x setup.sh`
+3. `./setup.sh` and follow the instructions at the link it echoes
 
 
 ## Configuring Rules
