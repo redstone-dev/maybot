@@ -23,29 +23,23 @@ class OOCQC(commands.Cog):
         """
         with open("oocqc.txt", "rt") as oocqc_file:
             oocqc_strings = oocqc_file.read().split("\n")
-            try:
-                results = [s for s in oocqc_strings if string.lower() in s.lower()]
+            results = [s for s in oocqc_strings if string.lower() in s.lower()]
+            results_formatted = nextcord.Embed(
+                title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
+                description="\n".join(results),
+            )
+            char_limit = conf["oocqc"]["embeds"]["char_limit"]
+            if len(results_formatted) > char_limit:
                 results_formatted = nextcord.Embed(
                     title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
-                    description="\n".join(results),
+                    description="\n".join(results)[:char_limit],
                 )
-                char_limit = conf["oocqc"]["embeds"]["char_limit"]
-                if len(results_formatted) > char_limit:
-                    results_formatted = nextcord.Embed(
-                        title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
-                        description="\n".join(results)[:char_limit],
-                    )
-                    await interaction.response.send_message(
-                        embed=results_formatted,
-                        content=f"only showing first {char_limit} characters",
-                    )
-                else:
-                    await interaction.response.send_message(embed=results_formatted)
-            except Exception as e:
                 await interaction.response.send_message(
-                    f"error. L bozo (probably <@{self.bot.owner_id}>'s fault)",
+                    embed=results_formatted,
+                    content=f"only showing first {char_limit} characters",
                 )
-                print(e)
+            else:
+                await interaction.response.send_message(embed=results_formatted)
 
     @oocqc.subcommand(description="gets a random string from oocqc")
     async def random(self, interaction: nextcord.Interaction):
