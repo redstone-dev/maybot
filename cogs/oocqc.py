@@ -29,15 +29,15 @@ class OOCQC(commands.Cog):
                     title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
                     description="\n".join(results),
                 )
-                OOC_EMBED_CHAR_LIMIT = int(conf["OOC_EMBED_CHAR_LIMIT"])
-                if len(results_formatted) > OOC_EMBED_CHAR_LIMIT:
+                char_limit = conf["oocqc"]["embeds"]["char_limit"]
+                if len(results_formatted) > char_limit:
                     results_formatted = nextcord.Embed(
                         title=f"{len(results)} result{'s' if len(oocqc_strings) != 1 else ''} found for \"{string}\"",
-                        description="\n".join(results)[:OOC_EMBED_CHAR_LIMIT],
+                        description="\n".join(results)[:char_limit],
                     )
                     await interaction.response.send_message(
                         embed=results_formatted,
-                        content=f"only showing first {OOC_EMBED_CHAR_LIMIT} characters",
+                        content=f"only showing first {char_limit} characters",
                     )
                 else:
                     await interaction.response.send_message(embed=results_formatted)
