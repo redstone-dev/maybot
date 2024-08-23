@@ -16,8 +16,19 @@ class Misc(commands.Cog):
         await self.bot.sync_all_application_commands()
         await ctx.reply("done :thumbs_up:")
 
+    @commands.command(name="stats")
+    async def stats(self, ctx: commands.Context):
+        """shows various stats"""
+        embed = nextcord.Embed() \
+            .add_field(name="latency", 
+                       value=f"{int(self.bot.latency * 1000)}ms",
+                    inline=True) 
+
+        await ctx.reply(embed=embed)
+
     @sync_tree.error
-    async def _sync_tree_err(self, ctx: commands.Context, error):
+    @stats.error
+    async def _not_admin_err(self, ctx: commands.Context, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send("wait, you're not the owner. L bozo")
 
