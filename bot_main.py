@@ -6,7 +6,6 @@ from dotenv import dotenv_values
 import cogs
 import cogs.hoi
 import cogs.misc
-import cogs.oocqc
 import cogs.starboard
 
 from cogs.util import Config
@@ -36,7 +35,6 @@ async def on_ready():
     print('------')
     bot.add_cog(cogs.hoi.HallOfInfamy(bot))
     bot.add_cog(cogs.misc.Misc(bot))
-    bot.add_cog(cogs.oocqc.OOCQC(bot))
     bot.add_cog(cogs.starboard.Starboard(bot))
     await cogs.hoi.remove_unwanted_hoi_posts(bot)
 
