@@ -64,4 +64,4 @@ class OOCQC(commands.Cog):
                 assert line < len(oocqc_strings)
             except:
                 await interaction.response.send_message("wow that line is out of this world!1!! L bozo", ephemeral=True)
-            await interaction.response.send_message(oocqc_strings[line - 1])
+            await interaction.response.send_message(content=oocqc_strings[line - 1])
