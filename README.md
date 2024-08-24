@@ -8,6 +8,7 @@
 2. `chmod u+x setup.sh`
 3. `./setup.sh` and follow the instructions at the link it echoes
 
+> NOTE: `setup.sh` requires `wget` to be installed. Check if it is, then install it using your package manager.
 
 ## Configuring Rules
 Create a file with the path `bot-config/rules.txt` and just put your rules in line by line like this:
