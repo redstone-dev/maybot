@@ -1,5 +1,6 @@
 import nextcord
 import os.path
+from os import listdir
 from nextcord.ext import commands
 from dotenv import dotenv_values
 
@@ -36,7 +37,14 @@ async def on_ready():
     bot.add_cog(cogs.hoi.HallOfInfamy(bot))
     bot.add_cog(cogs.misc.Misc(bot))
     bot.add_cog(cogs.starboard.Starboard(bot))
-    await cogs.hoi.remove_unwanted_hoi_posts(bot)
+    print("Added all cogs ...")
+    #await cogs.hoi.remove_unwanted_hoi_posts(bot)
+    if not os.path.exists("./extensions"):
+        return
+    
+    for ext in listdir("extensions"):
+        bot.load_extension(f"extensions.{ext}.ext")
+        print("Loaded extension", ext, "...")
 
 @bot.event
 async def on_command_error(ctx: commands.Context, err: commands.CommandError):
