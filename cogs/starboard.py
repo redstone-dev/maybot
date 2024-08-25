@@ -12,7 +12,7 @@ class Starboard(commands.Cog):
         msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         r_emojis = [r.emoji for r in msg.reactions]
 
-        guild_conf = global_conf["guild" + str(payload.guild_id)]
+        guild_conf = global_conf["guild:" + str(payload.guild_id)]
         guild_allowed_emojis = guild_conf["starboard"]["reactions"]["allowed_emojis"]
         reaction_count = msg.reactions[r_emojis.index(guild_allowed_emojis)].count
 
