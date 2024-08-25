@@ -5,9 +5,7 @@ from nextcord.ext import commands
 from dotenv import dotenv_values
 
 import cogs
-import cogs.hoi
-import cogs.misc
-import cogs.starboard
+from cogs import hoi, config, starboard, misc
 
 from cogs.util import global_conf
 
@@ -33,9 +31,10 @@ bot = commands.Bot(command_prefix=global_conf["general"]["prefix"], description=
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
-    bot.add_cog(cogs.hoi.HallOfInfamy(bot))
-    bot.add_cog(cogs.misc.Misc(bot))
-    bot.add_cog(cogs.starboard.Starboard(bot))
+    bot.add_cog(hoi.HallOfInfamy(bot))
+    bot.add_cog(misc.Misc(bot))
+    bot.add_cog(starboard.Starboard(bot))
+    bot.add_cog(config.ConfigCommands(bot))
     print("Added all cogs")
     #await cogs.hoi.remove_unwanted_hoi_posts(bot)
     if not os.path.exists("./data/extensions"):
