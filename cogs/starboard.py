@@ -1,6 +1,5 @@
 import nextcord
 from nextcord.ext import commands
-from random import choice
 from .util import global_conf
 
 class Starboard(commands.Cog):

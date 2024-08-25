@@ -14,6 +14,18 @@ class Config:
                 return self.config[key]
         except KeyError:
             return None
+        
+    def __setitem__(self, key: str, value):
+        try:
+            if key.startswith("guild:"):
+                with open("./data/guilds/" + key.split(":", 1)[1] + ".json", "wt") as guild_jsonf:
+                    guild_json = json.load(guild_jsonf)
+                    guild_json[key] = value
+                    json.dump(guild_json, fp=guild_jsonf)
+            else:
+                return self.config[key]
+        except KeyError:
+            return None
     
     def reload_config(self):
         with open("./data/config/default_settings.json", "rt") as config_file:
