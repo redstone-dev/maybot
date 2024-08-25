@@ -1,13 +1,13 @@
 import nextcord
 from nextcord.ext import commands
 from os.path import exists
+from .util import global_conf
+
+
 
 class Misc(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
-
-    def setup(self):
-        pass
 
     @commands.command(name="sync-tree")
     @commands.is_owner()
@@ -22,10 +22,17 @@ class Misc(commands.Cog):
         embed = nextcord.Embed() \
             .add_field(name="latency", 
                        value=f"{int(self.bot.latency * 1000)}ms",
-                    inline=True) 
+                       inline=True) 
 
         await ctx.reply(embed=embed)
+    
+    @commands.is_owner()
+    @commands.command(name="reload-defaults")
+    async def reload_config(self, ctx: commands.Context):
+        global_conf.reload_config()
+        await ctx.reply("done :thumbs_up:")
 
+    @reload_config.error
     @sync_tree.error
     @stats.error
     async def _not_admin_err(self, ctx: commands.Context, error):
@@ -34,12 +41,12 @@ class Misc(commands.Cog):
 
     @nextcord.slash_command(description="get line from rules.txt")
     async def rule(self, interaction: nextcord.Interaction, line: int):
-        if not exists("./bot-config/rules.txt"):
+        if not exists("./data/config/rules.txt"):
             await interaction.response.send_message(
                 "you dont have a `rules.txt` file. L bozo"
             )
 
-        with open("./bot-config/rules.txt", "rt") as rules:
+        with open("./data/config/rules.txt", "rt") as rules:
             rules_list = rules.read().split("\n")
             if line < 1:
                 await interaction.response.send_message(

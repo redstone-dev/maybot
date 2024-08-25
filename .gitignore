@@ -1,7 +1,5 @@
 .env
 __pycache__/*
 .venv/*
-bot-config/*
 cogs/__pycache__/*
-__pycache__/*
-extensions/*
+data/*

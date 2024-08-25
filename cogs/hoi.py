@@ -1,15 +1,15 @@
 import nextcord
 from nextcord.ext import commands
 from time import sleep
-from .util import Config
+from .util import global_conf
 
 import nextcord.ext
 
-conf = Config("./bot-config/bot_settings.json")
+
 
 async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
     try:
-        infamy_channel: nextcord.TextChannel = bot.get_channel(conf["hoi"]["channel_id"])
+        infamy_channel: nextcord.TextChannel = bot.get_channel(global_conf["hoi"]["channel_id"])
         messages = [
             msg async for msg in infamy_channel.history(limit=1024)
             if msg.author.id == bot.application_id
@@ -17,7 +17,7 @@ async def remove_unwanted_hoi_posts(bot: nextcord.ext.commands.Bot):
         for message in messages:
             r_emojis = [r.emoji for r in message.reactions]
 
-            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= conf["hoi"]["reaction_removal_thresh"]:
+            if "❌" in r_emojis and message.reactions[r_emojis.index("❌")].count >= global_conf["hoi"]["reaction_removal_thresh"]:
                 await message.delete()
     except Exception as e:
         print(e)
@@ -38,7 +38,8 @@ class HallOfInfamy(commands.Cog):
         embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
         embed.set_image(url=embed_img) if embed_img is not None else None
 
-        await self.bot.get_channel(conf["hoi"]["channel_id"]).send(
+        guild_conf = global_conf["guild:" + og_msg.guild.id]
+        await self.bot.get_channel(guild_conf["hoi"]["channel_id"]).send(
             content=f"-# [jump to original message](<{og_msg.jump_url}>) | inducted by {user.mention}", 
             embed=embed)
     
@@ -52,5 +53,7 @@ class HallOfInfamy(commands.Cog):
         msg = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         r_emojis = [r.emoji for r in msg.reactions]
 
-        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= int(conf["hoi"]["reaction_removal_thresh"]):
+        guild_conf = global_conf["guild:" + str(payload.guild_id)]
+
+        if "❌" in r_emojis and msg.reactions[r_emojis.index("❌")].count >= int(guild_conf["hoi"]["reaction_removal_thresh"]):
             await msg.delete()

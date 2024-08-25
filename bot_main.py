@@ -9,7 +9,7 @@ import cogs.hoi
 import cogs.misc
 import cogs.starboard
 
-from cogs.util import Config
+from cogs.util import global_conf
 
 description = '''bot for the gay nerds server
 
@@ -17,8 +17,8 @@ literally may from pokemon
 
 she has that name because her creator briefly considered may as a chosen name'''
 
-if os.path.exists("./bot-config/description.txt"):
-    with open("./bot-config/description.txt", "rt") as desc:
+if os.path.exists("./data/config/description.txt"):
+    with open("./data/config/description.txt", "rt") as desc:
         description = desc.read() if desc.read() != "" else "custom help description file is empty. L bozo"
 
 intents = nextcord.Intents.default()
@@ -26,9 +26,8 @@ intents.message_content = True
 intents.members = True
 
 dotenv_file = dotenv_values()
-conf = Config("./bot-config/bot_settings.json")
 
-bot = commands.Bot(command_prefix=conf["general"]["prefix"], description=description, intents=intents)
+bot = commands.Bot(command_prefix=global_conf["general"]["prefix"], description=description, intents=intents)
 
 @bot.event
 async def on_ready():
@@ -37,14 +36,13 @@ async def on_ready():
     bot.add_cog(cogs.hoi.HallOfInfamy(bot))
     bot.add_cog(cogs.misc.Misc(bot))
     bot.add_cog(cogs.starboard.Starboard(bot))
-    print("Added all cogs ...")
+    print("Added all cogs")
     #await cogs.hoi.remove_unwanted_hoi_posts(bot)
-    if not os.path.exists("./extensions"):
+    if not os.path.exists("./data/extensions"):
         return
     
-    for ext in listdir("extensions"):
-        bot.load_extension(f"extensions.{ext}.ext")
-        print("Loaded extension", ext, "...")
+    for ext in listdir("./data/extensions"):
+        bot.load_extension(f"data.extensions.{ext}.ext")
 
 @bot.event
 async def on_command_error(ctx: commands.Context, err: commands.CommandError):
