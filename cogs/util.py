@@ -32,16 +32,16 @@ class Config:
         with open("./data/config/default_settings.json", "rt") as config_file:
             self.config = dict(json.load(fp=config_file))
     
-        def guild_conf(self, guild_id: str):
-            if not exists("./data/guilds/" + guild_id + ".json"):
-                try:
-                    with open("./data/guilds/" + guild_id + ".json", "xt") as guild_file:
-                        c = json.dumps(self.config)
-                        guild_file.write(c)
-                except Exception as e:
-                    print(e)
-                    return self.config # fall back to defaults
-            with open("./data/guilds/" + guild_id + ".json", "rt") as guild_config:
-                return dict(json.load(fp=guild_config))
+    def guild_conf(self, guild_id: str):
+        if not exists("./data/guilds/" + guild_id + ".json"):
+            try:
+                with open("./data/guilds/" + guild_id + ".json", "xt") as guild_file:
+                    c = json.dumps(self.config)
+                    guild_file.write(c)
+            except Exception as e:
+                print(e)
+                return self.config # fall back to defaults
+        with open("./data/guilds/" + guild_id + ".json", "rt") as guild_config:
+            return dict(json.load(fp=guild_config))
         
 global_conf = Config()
