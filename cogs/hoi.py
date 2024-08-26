@@ -38,7 +38,7 @@ class HallOfInfamy(commands.Cog):
         embed.set_author(name=og_msg.author.display_name, icon_url=og_msg.author.display_avatar.url)
         embed.set_image(url=embed_img) if embed_img is not None else None
 
-        guild_conf = global_conf["guild:" + og_msg.guild.id]
+        guild_conf = global_conf["guild:" + str(og_msg.guild.id)]
         await self.bot.get_channel(guild_conf["hoi"]["channel_id"]).send(
             content=f"-# [jump to original message](<{og_msg.jump_url}>) | inducted by {user.mention}", 
             embed=embed)
