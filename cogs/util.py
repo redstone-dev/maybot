@@ -19,13 +19,15 @@ class Config:
         try:
             if key.startswith("guild:"):
                 path_to_set = "./data/guilds/" + key.split(":", 1)[1] + ".json"
+                print(path_to_set)
                 with open(path_to_set, "wt" if exists(path_to_set) else "xt") as guild_jsonf:
                     guild_json = json.load(guild_jsonf)
+                    print(f"Attempting to set {key} to {value}")
                     guild_json[key] = value
                     json.dump(guild_json, fp=guild_jsonf)
             else:
                 self.config[key] = value
-        except KeyError:
+        except AttributeError:
             return None
     
     def reload_config(self):
